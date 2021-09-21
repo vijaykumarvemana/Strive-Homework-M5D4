@@ -15,7 +15,7 @@ blogPostRoute.post("/", blogPostsValidationMiddleware, async(req, res, next) => 
     const errorList = validationResult(req)
 try {
     if(!errorList.isEmpty()){
-      next(createHttpError(400, { errorsList }))
+      next(createHttpError(400))
     }else{
 
         const newBlogPost = {_id: uniqid(), ...req.body, createdAt: new Date()}

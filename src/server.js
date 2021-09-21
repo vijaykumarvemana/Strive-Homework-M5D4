@@ -3,19 +3,36 @@ import cors from 'cors'
 import listEndpoints from "express-list-endpoints"
 import blogPostRoute from './blogPosts/index.js'
 import filesRoute from '../src/files/index.js'
-import {join} from 'path'
 import { badRequestHnadler, notFoundHandler,forbiddenErrorHandler, internalServerErrorHandler } from './errorHandlers.js'
 
 
 const server = express()
-const publicFolderPath = join(process.cwd(), "public")
-console.log("hello there:" , publicFolderPath)
-server.use(express.static(publicFolderPath))
+// const publicFolderPath = join(process.cwd(), "public")
+// console.log("hello there:" , publicFolderPath)
+// server.use(express.static(publicFolderPath))
 //middlewares
-server.use(cors())
-server.use(express.json())
+const whitelist = [process.env.FE_DEV_URL, process.env.FE_PROD_URL]
 
-const PORT = 3001
+const corsOpts = {
+    orgin: function (origin, next){
+
+        console.log("current origin:", origin)
+        if (!origin || whitelist.indexOf(origin) !== -1){
+            next(null, true)
+        }else{
+            next(new Error(`Origin ${origin} not allowed!`))
+        }
+    },
+
+}
+
+
+
+
+server.use(cors(corsOpts))
+server.use(express.json())  
+
+const port = process.env.PORT
 //router
 server.use("/blogPosts",blogPostRoute)
 server.use("/blogPosts",filesRoute)
@@ -27,8 +44,8 @@ server.use(forbiddenErrorHandler)
 server.use(internalServerErrorHandler)
 console.table(listEndpoints(server))
 
-server.listen(PORT, () => {
-    console.log(`server running on this port: ${PORT}`)   
+server.listen(port, () => {
+    console.log(`server running on this port: ${port}`)   
 })
 server.on("error",(error)=>{
     console.log(`Server is crushed due to :  ${error.message}`)
