@@ -3,6 +3,7 @@ import cors from 'cors'
 import listEndpoints from "express-list-endpoints"
 import blogPostRoute from './blogPosts/index.js'
 import filesRoute from '../src/files/index.js'
+import authorRoute from './authors/index.js'
 import { badRequestHnadler, notFoundHandler,forbiddenErrorHandler, internalServerErrorHandler } from './errorHandlers.js'
 
 
@@ -36,6 +37,8 @@ const port = process.env.PORT
 //router
 server.use("/blogPosts",blogPostRoute)
 server.use("/blogPosts",filesRoute)
+
+server.use("/authors", authorRoute)
 
 //error handlers
 server.use(badRequestHnadler)
