@@ -20,3 +20,6 @@ export const readAuthors = () => readJSON(authorsJSONPath)
 export const writeAuthors = (content) => writeJSON(authorsJSONPath, content)
 
 export const saveCoverPictures = (name, contentBuffer) => writeFile(join(publicFloderPath, name), contentBuffer)
+
+export const getAuthorsReadableStream = () => fs.createReadStream(authorsJSONPath)
+// export const getbBlogPDFReadableStream = () => fs.createReadStream(blogPostsJSONPath)

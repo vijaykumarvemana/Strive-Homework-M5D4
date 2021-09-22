@@ -36,7 +36,7 @@ server.use(express.json())
 const port = process.env.PORT
 //router
 server.use("/blogPosts",blogPostRoute)
-server.use("/blogPosts",filesRoute)
+server.use("/files",filesRoute)
 
 server.use("/authors", authorRoute)
 

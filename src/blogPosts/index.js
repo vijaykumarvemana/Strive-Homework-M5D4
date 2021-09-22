@@ -4,11 +4,10 @@ import { blogPostsValidationMiddleware } from "./validation.js"
 import { validationResult } from "express-validator"
 import createHttpError from "http-errors"
 import {readBlogPosts, writeBlogPosts} from "../lib/fs-tools.js"
+import { getbBlogPDFReadableStream } from "../lib/fs-tools.js"
 
 
-// const blogPostJSONPath = join(dirname(fileURLToPath(import.meta.url)), "blogPosts.json")
-// const readBlogposts = () =>  JSON.parse(fs.readFileSync(blogPostJSONPath))
-// const writeBlogPosts = blogs => fs.writeFileSync(blogPostJSONPath, JSON.stringify(blogs))
+
 const blogPostRoute = Router()
 
 blogPostRoute.post("/", blogPostsValidationMiddleware, async(req, res, next) => {
@@ -78,6 +77,24 @@ blogPostRoute.delete("/:blogPostID", async(req, res, next) => {
         next(error)
     }
 })
+
+
+// blogPostRoute.get("/blogPostPdf", async(req, res, next) => {
+
+//     try {
+//         res.setHeader("Content-Dispositon", `attachment; filename=blogPosts.json.gz`)
+//     const source = getAuthorsReadableStream()
+//     const transform = createGzip()
+//     const  destination = res
+
+//     pipeline(source, transform, destination, err => {
+
+//       if(err) next(err)})
+        
+//     } catch (error) {
+        
+//     }
+// })
 
 export default blogPostRoute
 
