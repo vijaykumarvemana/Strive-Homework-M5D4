@@ -5,6 +5,7 @@ import { validationResult } from "express-validator"
 import createHttpError from "http-errors"
 import {readBlogPosts, writeBlogPosts} from "../lib/fs-tools.js"
 import { getbBlogPDFReadableStream } from "../lib/fs-tools.js"
+import { generateBlogPDF } from "../lib/pdf.js"
 
 
 
@@ -38,7 +39,7 @@ blogPostRoute.get("/", async(req, res, next) => {
     }
 
 })
-blogPostRoute.get("/:blogPostID", async(req, res, next) => {
+blogPostRoute.get("/:blogPostID/PDF", async(req, res, next) => {
     try {
         const blogPosts = await readBlogPosts()
         const blogPost = blogPosts.find( b => b._id === req.params.blogPostID)
@@ -47,6 +48,10 @@ blogPostRoute.get("/:blogPostID", async(req, res, next) => {
         }else{
             res.status(404).send("blogPost not found!")
         }
+        const pdfStream = await generateBlogPDF(blog);
+         res.setHeader("Content-Type", "application/pdf");
+         pdfStream.pipe(res);
+         pdfStream.end();
     } catch (error) {
         next(error)
     }
