@@ -19,9 +19,13 @@ try {
 
         const newAuthor = {_id: uniqid(), ...req.body, createdAt: new Date()}
         const authors = await readAuthors()
+        console.log(newAuthor.email)
+        //  await sendEmail(newAuthor.email)
         authors.push(newAuthor)
         await writeAuthors(authors)
         res.status(201).send({_id: newAuthor._id, ...newAuthor})
+        // res.send("email sent succesfully")
+    
     }
 } catch (error) {
 

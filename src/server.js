@@ -5,7 +5,8 @@ import blogPostRoute from './blogPosts/index.js'
 import filesRoute from '../src/files/index.js'
 import authorRoute from './authors/index.js'
 import { badRequestHnadler, notFoundHandler,forbiddenErrorHandler, internalServerErrorHandler } from './errorHandlers.js'
-
+import swaggerUI from "swagger-ui-express"
+import yaml from "yamljs"
 
 const server = express()
 // const publicFolderPath = join(process.cwd(), "public")
@@ -34,11 +35,14 @@ server.use(cors(corsOpts))
 server.use(express.json())  
 
 const port = process.env.PORT
+
+const yamlDocument = yaml.load(join(process.cwd(), "./src/apiDescription.yml"))
 //router
 server.use("/blogPosts",blogPostRoute)
 server.use("/files",filesRoute)
 
 server.use("/authors", authorRoute)
+server.use("/docs", swaggerUI.serve, swaggerUI.setup(yamlDocument))
 
 //error handlers
 server.use(badRequestHnadler)
