@@ -4,6 +4,7 @@ import { authorsValidationMiddleware } from "./validation.js"
 import { validationResult } from "express-validator"
 import createHttpError from "http-errors"
 import {readAuthors, writeAuthors} from "../lib/fs-tools.js"
+import { sendEmail } from "../lib/email.js"
 
 
 
@@ -72,6 +73,17 @@ authorRoute.delete("/:authorID", async(req, res, next) => {
         await writeAuthors(filteredAuthors)
         res.status(204).send("deleted successfully")
         
+    } catch (error) {
+        next(error)
+    }
+})
+
+authorRoute.post("/email" , async (req, res, next) => {
+    try {
+        const {email} = req.body
+        
+        await sendEmail(email)
+        res.send("Email send successfully!")
     } catch (error) {
         next(error)
     }
