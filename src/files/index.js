@@ -6,6 +6,7 @@ import { CloudinaryStorage } from "multer-storage-cloudinary"
 import { getAuthorsReadableStream } from '../lib/fs-tools.js'
 import { pipeline } from "stream" 
 import { createGzip } from "zlib"
+import json2csv from "json2csv"
 
 const filesRouter = express.Router()
 
@@ -68,6 +69,23 @@ filesRouter.get("/PDFDownload", async (req, res, next) => {
   } catch (error) {
     next(error)
   }
+})
+
+filesRouter.get("/CSVDownload", async (req, res, next) =>{
+  try {
+    res.setHeader("Content-Disposition", `attachment; filename=csvfile.csv`)
+
+    const source = getAuthorsReadableStream()
+    const transform = new json2csv.Transform({fields: ["name", "surname", "email", "date of birth", "avatar"]})
+    const destination = res
+
+    pipeline(source, transform, destination, err =>{
+      if(err) next(err)
+    })
+  } catch (error) {
+    next(error)
+  }
+
 })
 
 export default filesRouter

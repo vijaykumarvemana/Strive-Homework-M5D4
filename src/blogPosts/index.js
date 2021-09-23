@@ -19,7 +19,7 @@ try {
     }else{
 
         const newBlogPost = {_id: uniqid(), ...req.body, createdAt: new Date()}
-        const blogPosts = readBlogPosts()
+        const blogPosts = await readBlogPosts()
         blogPosts.push(newBlogPost)
         await writeBlogPosts(blogPosts)
         res.status(201).send({_id: newBlogPost._id})
@@ -49,6 +49,7 @@ blogPostRoute.get("/:blogPostID/PDF", async(req, res, next) => {
             res.status(404).send("blogPost not found!")
         }
         const pdfStream = await generateBlogPDF(blog);
+        console.log("hello........",pdfStream)
          res.setHeader("Content-Type", "application/pdf");
          pdfStream.pipe(res);
          pdfStream.end();
